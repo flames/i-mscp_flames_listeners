@@ -1,1 +1,10 @@
-.idea/
+*.PHPEditProject
+.idea
+nbproject
+.pc
+.buildpath
+.project
+.vagrant
+.settings
+Vagrantfile
+.DS_Store
