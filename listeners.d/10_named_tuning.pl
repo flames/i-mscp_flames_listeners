@@ -24,7 +24,7 @@ package Listener::Named::Tuning;
 use iMSCP::EventManager;
 
 # Remove default domain
-sub removeDefaultDnsRecord
+sub beforeNamedAddCustomDNS
 {
 	my ($wrkDbFileContent, $data) = @_;
 
@@ -46,7 +46,7 @@ sub removeDefaultDnsRecord
 }
 
 my $eventManager = iMSCP::EventManager->getInstance();
-$eventManager->register('beforeNamedAddCustomDNS', \&afterNamedAddCustomDNS);
+$eventManager->register('beforeNamedAddCustomDNS', \&beforeNamedAddCustomDNS);
 
 1;
 __END__
