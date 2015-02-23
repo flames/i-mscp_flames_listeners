@@ -26,21 +26,18 @@ use iMSCP::EventManager;
 # Remove default domain
 sub removeDefaultDnsRecord
 {
-	my ($wrkFile, $data) = @_;
+	my ($wrkDbFileContent, $data) = @_;
 
-	if ($data->{'CUSTOM_DNS_RECORD'}) {
-		for(keys %{$data->{'CUSTOM_DNS_RECORD'}}) {
+	if (@{$data->{'DNS_RECORDS'}}) {
+		for(@{$data->{'DNS_RECORDS'}}) {
+			my ($name, $class, $type, $data) = @{$_};
+
 			if(
-				(
-					$data->{'CUSTOM_DNS_RECORD'}->{$_}->{'domain_dns'} eq "$data->{'DOMAIN_NAME'}." ||
-					$data->{'CUSTOM_DNS_RECORD'}->{$_}->{'domain_dns'} eq ''
-				) &&
-				$data->{'CUSTOM_DNS_RECORD'}->{$_}->{'domain_class'} eq 'IN' &&
-				$data->{'CUSTOM_DNS_RECORD'}->{$_}->{'domain_type'} eq 'A' &&
-				$data->{'CUSTOM_DNS_RECORD'}->{$_}->{'domain_text'} ne $data->{'DOMAIN_IP'}
+				($name eq "$data->{'DOMAIN_NAME'}." || $name eq '') &&
+				$class eq 'IN' && $type eq 'A' && $data ne $data->{'DOMAIN_IP'}
 			) {
-				my $match = quotemeta("\@\t\tIN\tA\t$data->{'DOMAIN_IP'}\n");
-				$$wrkFile =~ s/$match//;
+				my $match = quotemeta("\@\t+IN\t+A\t+$data->{'DOMAIN_IP'}\n");
+				$$wrkDbFileContent =~ s/$match//;
 			}
 		}
 	}
@@ -49,7 +46,7 @@ sub removeDefaultDnsRecord
 }
 
 my $eventManager = iMSCP::EventManager->getInstance();
-$eventManager->register('afterNamedAddDmnDb', \&removeDefaultDnsRecord);
+$eventManager->register('beforeNamedAddCustomDNS', \&afterNamedAddCustomDNS);
 
 1;
 __END__
