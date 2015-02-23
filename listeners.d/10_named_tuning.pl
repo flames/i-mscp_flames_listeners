@@ -36,7 +36,7 @@ sub beforeNamedAddCustomDNS
 				($name eq "$data->{'DOMAIN_NAME'}." || $name eq '') &&
 				$class eq 'IN' && $type eq 'A' && $data ne $data->{'DOMAIN_IP'}
 			) {
-				my $match = quotemeta("\@\tIN\tA\t+$data->{'DOMAIN_IP'}\n");
+				my $match = quotemeta("\@\tIN\tA\t$data->{'DOMAIN_IP'}\n");
 				$$wrkDbFileContent =~ s/$match//;
 			}
 		}
